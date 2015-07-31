@@ -1,0 +1,48 @@
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script src="https://www.google.com/jsapi"></script>
+        <script>
+        function drawChart()
+        {
+            var public_key = 'aGOE6rY5mxcxX1GNnOKq';
+            var jsonData = $.ajax({
+            url: 'https://data.sparkfun.com/output/' + public_key + '.json',
+            data: {page: 1},
+            dataType: 'jsonp',
+        }).done(function (results) {
+
+            var data = new google.visualization.DataTable();
+            data.addColumn('datetime', 'Time');
+            data.addColumn('number', 'Light');
+
+            $.each(results, function (i, row) {
+            data.addRow([
+                (new Date(row.timestamp)),
+                parseFloat(row.light)
+                ]);
+            });
+            var options = {
+                title: 'Light Graph',
+                curveType: 'function',
+                legend: { position: 'bottom' }
+                };
+            var chart = new google.visualization.LineChart($('#chart').get(0));
+            chart.draw(data, {
+            title: 'Light Graph'
+            });
+            });
+        }
+
+        google.load('visualization', '1', {
+        packages: ['corechart']
+        });
+        google.setOnLoadCallback(drawChart);
+
+        </script>
+
+    </head>
+<body>
+<div id="chart" style="width: 100%;"></div>
+</body>
+</html>
